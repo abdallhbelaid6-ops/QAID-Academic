@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة قَيْد | QAID - المحاسبة والعلوم المالية</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --royal-blue: #1e3d59;     
+            --royal-blue-dark: #142834;
+            --soft-green: #438a5e;     
+            --bg-light: #f4f7f6;       
+            --card-bg: #ffffff;
+            --text-color: #2b3e50;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-light); color: var(--text-color); }
+        .navbar-custom { background-color: var(--royal-blue); box-shadow: 0 4px 15px rgba(30,61,89,0.2); }
+        .navbar-brand { font-weight: bold; font-size: 1.5rem; color: #fff !important; cursor: pointer; display: flex; align-items: center; gap: 12px; }
+        .brand-logo-circle { width: 45px; height: 45px; background: var(--soft-green); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.1rem; border: 2px solid #8ee4af; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        .nav-link { color: #d6e4f0 !important; transition: 0.3s; cursor: pointer; }
+        .nav-link:hover, .nav-link.active { color: #8ee4af !important; }
+        .hero-section { background: linear-gradient(135deg, var(--royal-blue-dark), var(--royal-blue)); color: white; padding: 60px 20px; text-align: center; border-bottom: 5px solid var(--soft-green); }
+        .section-title { font-weight: bold; color: var(--royal-blue); border-bottom: 3px solid var(--soft-green); display: inline-block; padding-bottom: 8px; margin-bottom: 25px; }
+        .card-custom { border: none; border-radius: 12px; box-shadow: 0 4px 15px rgba(30,61,89,0.06); background: var(--card-bg); transition: 0.3s; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-custom:hover { transform: translateY(-5px); }
+        .panel-box { background: var(--card-bg); border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(30,61,89,0.05); margin-bottom: 25px; border: 1px solid #dbe2e8; }
+        .hidden { display: none !important; }
+        .terms-box { max-height: 130px; overflow-y: auto; background: #fff5f5; border: 1px solid #f5c6cb; color: #721c24; padding: 12px; font-size: 0.85rem; border-radius: 6px; margin-bottom: 15px; text-align: start; }
+        table th, table td { text-align: right; vertical-align: middle; white-space: nowrap; }
+        /* زر مخفي تماماً للزوار لدخول الإدارة بالنقر المزدوج */
+        .secret-admin-trigger { color: #1e3d59; user-select: none; cursor: default; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand" onclick="showSection('home')">
+                <div class="brand-logo-circle">قَيْد</div>
+                منصة قَيْد <span>| QAID</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link active" id="nav-home" onclick="showSection('home')">الرئيسية</a></li>
+                    <li class="nav-item"><a class="nav-link" id="nav-subjects" onclick="showSection('subjects')">المقررات المحاسبية</a></li>
+                    <li class="nav-item"><a class="nav-link" id="nav-private-courses" onclick="showSection('private-courses')">دورات القطاع الخاص</a></li>
+                    <li class="nav-item"><a class="nav-link" id="nav-instructors" onclick="showSection('instructors')">المدربون</a></li>
+                </ul>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-light btn-sm" onclick="showSection('student-login')">دخول المتدرب</button>
+                    <button class="btn btn-sm fw-bold text-white" style="background-color: var(--soft-green);" onclick="showSection('instructor-login')">دخول المدرب</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- الرئيسية -->
+    <div id="section-home" class="app-section">
+        <div class="hero-section">
+            <div class="container">
+                <h1 class="display-5 fw-bold mb-3">منصة قيد التعليمية للمحاسبة والعلوم المالية</h1>
+                <p class="lead text-light mb-4" style="font-style: italic; font-weight: 600;">"لا تطمح لتكون محاسباً.. هنا نضمن لك أن تكون محاسباً"</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <button class="btn btn-light fw-bold px-4 py-2" style="color: var(--royal-blue);" onclick="showSection('subjects')">المقررات الأكاديمية</button>
+                    <button class="btn fw-bold px-4 py-2 text-white" style="background-color: var(--soft-green);" onclick="showSection('private-courses')">دورات القطاع الخاص</button>
+                </div>
+            </div>
+        </div>
+        <div class="container my-5">
+            <h3 class="section-title text-center mb-4 d-block">الدورات والمقررات المطروحة الفعالة حالياً من المدربين</h3>
+            <div class="row g-4" id="home-courses-grid"></div>
+        </div>
+    </div>
+
+    <!-- المقررات الدراسية المحاسبية -->
+    <div id="section-subjects" class="app-section hidden container my-5">
+        <h2 class="section-title">المقررات الأكاديمية المحاسبية المتاحة</h2>
+        <div class="row g-4" id="subjects-list"></div>
+    </div>
+
+    <!-- دورات القطاع الخاص -->
+    <div id="section-private-courses" class="app-section hidden container my-5">
+        <h2 class="section-title">دورات القطاع الخاص المهنية المتاحة</h2>
+        <div class="row g-4" id="private-courses-list"></div>
+    </div>
+
+    <!-- صفحة عرض محتوى المقرر أو الدورة للمتدرب (مشاهدة الفيديو وتحميل الملف مباشرة) -->
+    <div id="section-course-details" class="app-section hidden container my-5">
+        <button class="btn btn-outline-secondary btn-sm mb-3" onclick="showSection('student-dashboard')">← عودة لوحة المتدرب</button>
+        <div class="panel-box">
+            <h2 class="fw-bold mb-2" id="detail-course-title" style="color: var(--royal-blue);"></h2>
+            <p class="text-muted" id="detail-course-desc"></p>
+            <hr>
+            <div class="mb-4">
+                <h4 style="color: var(--soft-green);">📚 الفيديوهات التعليمية وملفات النظام (DBF) المرفوعة من الأستاذ</h4>
+                <div id="detail-lectures-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- المدربون -->
+    <div id="section-instructors" class="app-section hidden container my-5">
+        <h2 class="section-title">نخبة المدربين والأكاديميين</h2>
+        <div class="row g-4" id="public-instructors-list"></div>
+    </div>
+
+    <!-- دخول / تسجيل المتدرب مع التعهد القانوني -->
+    <div id="section-student-login" class="app-section hidden container my-5" style="max-width: 520px;">
+        <div class="panel-box text-center">
+            <h3 class="mb-3" style="color: var(--royal-blue);">بوابة المتدرب</h3>
+            <div id="student-login-form">
+                <div class="mb-3 text-start"><label class="form-label small">اسم المستخدم</label><input type="text" id="st-user" class="form-control"></div>
+                <div class="mb-3 text-start"><label class="form-label small">كلمة المرور</label><input type="password" id="st-pass" class="form-control"></div>
+                <button class="btn w-100 py-2 mb-2 text-white" style="background-color: var(--royal-blue);" onclick="loginStudent()">دخول</button>
+                <button class="btn btn-link btn-sm text-decoration-none p-0" style="color: var(--royal-blue);" onclick="toggleStudentAuth()">حساب جديد (التعهد والشروط القانونية)</button>
+            </div>
+            <div id="student-register-form" class="hidden">
+                <div class="mb-3 text-start"><label class="form-label small">الاسم الكامل</label><input type="text" id="reg-st-name" class="form-control"></div>
+                <div class="mb-3 text-start"><label class="form-label small">البريد الإلكتروني (Gmail)</label><input type="email" id="reg-st-email" class="form-control" placeholder="example@gmail.com"></div>
+                <div class="mb-3 text-start"><label class="form-label small">اسم المستخدم</label><input type="text" id="reg-st-user" class="form-control"></div>
+                <div class="mb-3 text-start"><label class="form-label small">كلمة المرور</label><input type="password" id="reg-st-pass" class="form-control"></div>
+                
+                <label class="form-label small text-start d-block fw-bold text-danger">تعهد وإقرار قانوني إلزامي للطالب:</label>
+                <div class="terms-box">
+                    أقر أنا المتدرب المسجل بهذه المنصة بأنني أتحمل كافة المخالفات القانونية والمسؤولية المدنية والجنائية في حال قمت بمشاركة بيانات حسابي، أو تسريب ونشر مقاطع الفيديو التعليمية أو ملفات النظام الخاصة بمنصة قَيْد لأي طرف ثالث، وأحقية الإدارة في اتخاذ الإجراءات القانونية الصارمة بحقي.
+                </div>
+                <div class="form-check text-start mb-3">
+                    <input class="form-check-input" type="checkbox" id="st-terms-check">
+                    <label class="form-check-label small fw-bold" for="st-terms-check">أقر بالموافقة التامة على التعهد والمسؤولية القانونية</label>
+                </div>
+                <button class="btn w-100 py-2 mb-2 text-white" style="background-color: var(--soft-green);" onclick="registerStudent()">إرسال طلب التسجيل للإدارة</button>
+                <button class="btn btn-link btn-sm text-decoration-none" style="color: var(--royal-blue);" onclick="toggleStudentAuth()">لديك حساب؟ سجل دخولك</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- لوحة تحكم المتدرب -->
+    <div id="section-student-dashboard" class="app-section hidden container my-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title m-0" id="student-welcome-title">لوحة تحكم المتدرب</h2>
+            <button class="btn btn-outline-danger btn-sm" onclick="logout()">تسجيل خروج</button>
+        </div>
+        
+        <div class="panel-box mb-4" style="background: #fafcfb;">
+            <h5 class="mb-3" style="color: var(--royal-blue);">💳 شحن المحفظة وسداد الرسوم</h5>
+            <div class="input-group mb-2" style="max-width: 500px;">
+                <input type="text" id="recharge-card-input" class="form-control" placeholder="أدخل رقم كارت الشحن (مثلاً QAID-XXXX)">
+                <button class="btn text-white" style="background-color: var(--soft-green);" onclick="rechargeByCard()">شحن بالكارت</button>
+            </div>
+            <div class="alert alert-secondary small mt-3 mb-2">
+                <strong>💡 تعليمات شراء الكروت:</strong><br>
+                لشراء كروت الشحن، قم بتحويل قيمة الكرت المطلوبة إلى أحد حسابات المنصة المعتمدة أدناه، ثم أرسل إيصال التحويل عبر واتساب لدعم المنصة لاستلام كرت الشحن الفوري:
+                <ul class="mb-0 mt-1">
+                    <li>ون باي (المصرف التجاري): <code>069012203348011</code></li>
+                    <li>لي باي (الرقم الدولي IBAN): <code>LY08004069069012203348011</code></li>
+                    <li>واتساب التواصل السريع للدعم: <strong class="text-dark">0913368086</strong></li>
+                </ul>
+            </div>
+            <h4 class="mt-3 text-success">الرصيد المتاح بالمحفظة: <span id="student-wallet-balance">0.00</span> د.ل</h4>
+        </div>
+
+        <div class="panel-box">
+            <h5 class="mb-3" style="color: var(--soft-green);">📚 المقررات والدورات المتاحة من المدربين</h5>
+            <div id="student-subscriptions-container"></div>
+        </div>
+    </div>
+
+    <!-- دخول / تسجيل المدرب -->
+    <div id="section-instructor-login" class="app-section hidden container my-5" style="max-width: 480px;">
+        <div class="panel-box text-center">
+            <h3 class="mb-3" style="color: var(--royal-blue);">بوابة الأستاذ المدرب</h3>
+            <div id="instructor-login-form">
+                <div class="mb-3 text-start"><label class="form-label small">اسم المستخدم</label><input type="text" id="inst-user" class="form-control"></div>
+                <div class="mb-3 text-start"><label class="form-label small">كلمة المرور</label><input type="password" id="inst-pass" class="form-control"></div>
+                <button class="btn w-100 py-2 fw-bold mb-2 text-white" style="background-color: var(--soft-green);" onclick="loginInstructor()">دخول لوحة المدرب</button>
+                <button class="btn btn-link btn-sm text-decoration-none p-0" style="color: var(--royal-blue);" onclick="toggleInstructorAuth()">تسجيل مدرب جديد</button>
+            </div>
+            <div id="instructor-register-form" class="hidden">
+                <div class="mb-3 text-start"><label class="form-label small">الاسم الكامل</label><input type="text" id="reg-inst-name" class="form-control"></div>
+                <div class="mb-3 text-start"><label class="form-label small">البريد الإلكتروني (Gmail)</label><input type="email" id="reg-inst-email" class="form-control" placeholder="example@gmail.com"></div>
+                <div class="mb-3 text-start"><label class="form-label small">اسم المستخدم</label><input type="text" id="reg-inst-user" class="form-control"></div>
+                <div class="mb-3 text-start"><label class="form-label small">كلمة المرور</label><input type="password" id="reg-inst-pass" class="form-control"></div>
+                <div class="form-check text-start mb-3"><input class="form-check-input" type="checkbox" id="inst-terms-check"><label class="form-check-label small" for="inst-terms-check">أوافق على شروط وتعهد المدربين</label></div>
+                <button class="btn w-100 py-2 mb-2 text-white" style="background-color: var(--soft-green);" onclick="registerInstructor()">إرسال طلب المدرب</button>
+                <button class="btn btn-link btn-sm text-decoration-none" style="color: var(--royal-blue);" onclick="toggleInstructorAuth()">العودة لتسجيل الدخول</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- لوحة تحكم المدرب (رفع الفيديوهات وملفات DBF من هاتف الأستاذ مباشرة) -->
+    <div id="section-instructor-dashboard" class="app-section hidden container my-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title m-0" style="color: var(--soft-green);" id="instructor-welcome-title">لوحة تحكم الأستاذ المدرب</h2>
+            <button class="btn btn-outline-danger btn-sm" onclick="logout()">تسجيل خروج</button>
+        </div>
+        
+        <div class="panel-box mb-4">
+            <h5 class="mb-3" style="color: var(--royal-blue);">➕ اختر مقرراً محاسبياً أو دورة لطرحها في جدولك</h5>
+            <div class="row g-2">
+                <div class="col-md-8"><select id="predefined-course-select" class="form-select"></select></div>
+                <div class="col-md-4"><button class="btn w-100 text-white fw-bold" style="background-color: var(--soft-green);" onclick="assignCourseToInstructor()">إضافة المقرر لجدولي</button></div>
+            </div>
+        </div>
+
+        <div class="panel-box mb-4 border-success">
+            <h4 class="fw-bold mb-2" style="color: var(--soft-green);">💰 كشف حسابي المالي وأرباحي</h4>
+            <p class="small text-muted mb-2">حساب الأرباح: 15 ديناراً لكل محاضرة مرفوعة + 100 دينار لكل دورة قطاع خاص + 10 دنانير لكل مقرر أكاديمي.</p>
+            <h3 class="text-success" id="instructor-earnings-display">0.00 د.ل</h3>
+        </div>
+
+        <div class="panel-box mb-4">
+            <h4 class="fw-bold mb-3" style="color: var(--royal-blue);">📖 مقرراتي ودوراتي المطروحة (رفع الفيديو وملف DBF من الهاتف)</h4>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light"><tr><th>الكود</th><th>المقرر / الدورة</th><th>النوع</th><th>المحتويات والدروس</th><th>الإجراءات</th></tr></thead>
+                    <tbody id="instructor-subjects-table"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- لوحة تحكم الإدارة -->
+    <div id="section-admin-dashboard" class="app-section hidden container my-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title text-success m-0">بوابة الإدارة المركزية</h2>
+            <button class="btn btn-outline-danger btn-sm" onclick="logout()">تسجيل خروج</button>
+        </div>
+
+        <!-- قسم الحسابات والدخل المالي للإدارة -->
+        <div class="panel-box mb-4 border-success" style="background: #f4faf6;">
+            <h4 class="fw-bold mb-3 text-success">📊 الحسابات والدخل المالي العام للمنصة</h4>
+            <div class="row text-center">
+                <div class="col-md-6 mb-2">
+                    <div class="p-3 bg-white rounded border">
+                        <h5>إجمالي إيرادات الرسوم المحصلة</h5>
+                        <h3 class="text-success" id="admin-total-revenue">0.00 د.ل</h3>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <div class="p-3 bg-white rounded border">
+                        <h5>عدد الاشتراكات الناجحة للطلاب</h5>
+                        <h3 class="text-primary" id="admin-total-subs">0</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel-box mb-4 border-primary">
+            <h4 class="fw-bold mb-3" style="color: var(--royal-blue);">💳 إصدار وتوليد كروت شحن للمحافظ + كشف الكروت</h4>
+            <div class="row g-3 align-items-end mb-3">
+                <div class="col-md-4"><label class="form-label small">قيمة الكرت (د.ل)</label><input type="number" id="new-card-amount" class="form-control" value="100"></div>
+                <div class="col-md-4"><button class="btn text-white w-100 fw-bold" style="background-color: var(--royal-blue);" onclick="generateRechargeCard()">توليد وإصدار كرت جديد</button></div>
+            </div>
+            <h5 class="text-secondary small mb-2">📋 كشف كروت الشحن بالمنصة</h5>
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered">
+                    <thead class="table-light"><tr><th>رمز الكرت</th><th>القيمة</th><th>حالة الكرت</th></tr></thead>
+                    <tbody id="admin-cards-table"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- إدارة المتدربين -->
+        <div class="panel-box mb-4 border-info">
+            <h4 class="fw-bold mb-3 text-primary">👨‍🎓 إدارة المتدربين (الطلبات والأرقام السرية المخفية والكشوفات)</h4>
+            <h5 class="text-secondary mb-2">⏳ طلبات تسجيل المتدربين المعلقة</h5>
+            <div class="table-responsive mb-4"><table class="table table-hover align-middle"><thead class="table-light"><tr><th>الاسم</th><th>البريد</th><th>اسم المستخدم</th><th>الإجراء</th></tr></thead><tbody id="admin-pending-students"></tbody></table></div>
+            <h5 class="text-secondary mb-2">📋 كشف المتدربين المعتمدين</h5>
+            <div class="table-responsive"><table class="table table-hover align-middle"><thead class="table-light"><tr><th>الاسم</th><th>البريد</th><th>اسم المستخدم</th><th>كلمة المرور</th><th>الحالة</th></tr></thead><tbody id="admin-students-list-table"></tbody></table></div>
+        </div>
+
+        <!-- إدارة المدربين -->
+        <div class="panel-box mb-4 border-success">
+            <h4 class="fw-bold mb-3 text-success">👨‍🏫 إدارة المدربين (الطلبات والأرقام السرية المخفية والكشوفات)</h4>
+            <h5 class="text-secondary mb-2">⏳ طلبات تسجيل المدربين المعلقة</h5>
+            <div class="table-responsive mb-4"><table class="table table-hover align-middle"><thead class="table-light"><tr><th>الاسم</th><th>البريد</th><th>الإجراء</th></tr></thead><tbody id="admin-pending-instructors"></tbody></table></div>
+            <h5 class="text-secondary mb-2">📋 كشف المدربين المعتمدين</h5>
+            <div class="table-responsive"><table class="table table-hover align-middle"><thead class="table-light"><tr><th>الاسم</th><th>البريد</th><th>اسم المستخدم</th><th>كلمة المرور</th><th>الحالة</th></tr></thead><tbody id="admin-instructors-list-table"></tbody></table></div>
+        </div>
+    </div>
+
+    <!-- التذييل (مع زر مخفي وسهل لدخول الإدارة بالنقر المزدوج على كلمة منصة قيد في التذييل) -->
+    <footer class="text-center py-4 text-white" style="background-color: var(--royal-blue-dark);">
+        <div class="container">
+            <h5 ondblclick="adminSecretLogin()" style="cursor: pointer;" title="انقر مرتين هنا للدخول">منصة قَيْد التعليمية للمحاسبة والعلوم المالية</h5>
+            <p class="small text-light">الدعم الفني والواتساب: <strong>0913368086</strong></p>
+            <div class="small pt-2 border-top border-secondary text-muted">
+                جميع الحقوق محفوظة © 2026 منصة قَيْد. 
+                <span class="secret-admin-trigger" ondblclick="adminSecretLogin()">⚙️</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let masterCoursesPool = [
+            { id: 991, type: 'private', code: "PRV-INT", title: "دورة إعداد محاسب", price: 200, instructorShare: 100, desc: "تأهيل شامل لاحتراف العمل المحاسبي.", lectures: [], exams: { midterm: null, final: null } },
+            { id: 992, type: 'private', code: "PRV-SYS", title: "دورة منظومات المحلات التجارية", price: 400, instructorShare: 100, desc: "تدريب عملي على منظومات المبيعات والمخازن.", lectures: [], exams: { midterm: null, final: null } },
+            { id: 993, type: 'private', code: "PRV-PRO", title: "دورة المحاسب المحترف", price: 600, instructorShare: 100, desc: "مستويات متقدمة في الاحتراف المالي.", lectures: [], exams: { midterm: null, final: null } },
+
+            { id: 1, type: 'subject', code: "ACC130", title: "مبادئ المحاسبة (1)", price: 40, instructorShare: 10, desc: "تسجيل العمليات بدفتر اليومية والأستاذ.", lectures: [], exams: { midterm: null, final: null } },
+            { id: 2, type: 'subject', code: "ACC131", title: "مبادئ المحاسبة (2)", price: 40, instructorShare: 10, desc: "تتمة المبادئ المحاسبية والتسويات.", lectures: [], exams: { midterm: null, final: null } },
+            { id: 3, type: 'subject', code: "ACC230", title: "المحاسبة المتوسطة (1)", price: 40, instructorShare: 10, desc: "معالجة الأصول المتداولة والتسويات.", lectures: [], exams: { midterm: null, final: null } },
+            { id: 4, type: 'subject', code: "ACC231", title: "المحاسبة المتوسطة (2)", price: 40, instructorShare: 10, desc: "معالجة الأصول غير المتداولة والالتزامات.", lectures: [], exams: { midterm: null, final: null } },
+            { id: 5, type: 'subject', code: "ACC330", title: "محاسبة شركات الأشخاص", price: 40, instructorShare: 10, desc: "تأسيس وتعديل وتصفية شركات التضامن.", lectures: [], exams: { midterm: null, final: null } },
+            { id: 6, type: 'subject', code: "ACC331", title: "محاسبة شركات الأموال", price: 40, instructorShare: 10, desc: "تأسيس شركات المساهمة والأسهم.", lectures: [], exams: { midterm: null, final: null } },
+            { id: 7, type: 'subject', code: "ACC332", title: "محاسبة التكاليف", price: 40, instructorShare: 10, desc: "حساب تكاليف الأوامر والمراحل الإنتاجية.", lectures: [], exams: { midterm: null, final: null } },
+            { id: 8, type: 'subject', code: "ACC333", title: "محاسبة التكاليف المتقدمة", price: 40, instructorShare: 10, desc: "أنظمة التكاليف الحديثة واتخاذ القرارات.", lectures: [], exams: { midterm: null, final: null } },
+            { id: 9, type: 'subject', code: "ACC334", title: "المحاسبة الضريبية", price: 40, instructorShare: 10, desc: "الضرائب المباشرة وغير المباشرة وتطبيقاتها.", lectures: [], exams: { midterm: null, final: null } },
+            { id: 10, type: 'subject', code: "ACC335", title: "محاسبة النفط", price: 40, instructorShare: 10, desc: "المحاسبة في قطاع استكشاف وإنتاج النفط والغاز.", lectures: [], exams: { midterm: null, final: null } },
+            { id: 11, type: 'subject', code: "ACC336", title: "محاسبة المصارف وشركات التأمين", price: 40, instructorShare: 10, desc: "العمليات المحاسبية في البنوك.", lectures: [], exams: { midterm: null, final: null } },
+            { id: 12, type: 'subject', code: "ACC337", title: "محاسبة المشروعات الخدمية", price: 40, instructorShare: 10, desc: "القيود المحاسبية للشركات الخدمية.", lectures: [], exams: { midterm: null, final: null } },
+            { id: 13, type: 'subject', code: "ACC430", title: "مبادئ المراجعة (1)", price: 40, instructorShare: 10, desc: "معايير التدقيق وأدلة الإثبات.", lectures: [], exams: { midterm: null, final: null } },
+            { id: 14, type: 'subject', code: "ACC432", title: "محاسبة الأقسام والفروع", price: 40, instructorShare: 10, desc: "محاسبة الفروع والأقسام المستقلة.", lectures: [], exams: { midterm: null, final: null } },
+            { id: 15, type: 'subject', code: "ACC433", title: "تصميم النظم المحاسبية", price: 40, instructorShare: 10, desc: "هندسة الدورات المستندية.", lectures: [], exams: { midterm: null, final: null } },
+            { id: 16, type: 'subject', code: "ACC434", title: "المحاسبة الإدارية", price: 40, instructorShare: 10, desc: "الموازنات التخطيطية.", lectures: [], exams: { midterm: null, final: null } },
+            { id: 17, type: 'subject', code: "ACC435", title: "تحليل القوائم المالية", price: 40, instructorShare: 10, desc: "التحليل النسبي والمالي لتقييم الأداء.", lectures: [], exams: { midterm: null, final: null } },
+            { id: 18, type: 'subject', code: "ACC436", title: "المحاسبة الدولية", price: 40, instructorShare: 10, desc: "معايير المحاسبة الدولية.", lectures: [], exams: { midterm: null, final: null } },
+            { id: 19, type: 'subject', code: "ACC437", title: "محاسبة الشركات القابضة", price: 40, instructorShare: 10, desc: "القوائم المالية الموحدة.", lectures: [], exams: { midterm: null, final: null } },
+            { id: 20, type: 'subject', code: "ACC438", title: "دراسات في المحاسبة", price: 40, instructorShare: 10, desc: "قضايا ومعالجات محاسبية متقدمة.", lectures: [], exams: { midterm: null, final: null } }
+        ];
+
+        let activeCourses = [
+            { 
+                ...masterCoursesPool[0], 
+                instructor: "أ. عبدالله امحمد بلعيد لسود", 
+                status: "متاح", 
+                lectures: [{ id: 101, title: "المحاضرة الأولى", videoUrl: "", dbfName: "accounts.dbf", dbfData: "# ملف تمثيلي للنظام" }], 
+                exams: { midterm: null, final: null } 
+            }
+        ];
+
+        let usersList = [
+            { type: "مدرب", name: "أ. عبدالله امحمد بلعيد لسود", email: "abdullah@gmail.com", user: "abdullah", pass: "12345", approved: true },
+            { type: "متدرب", name: "محمد أحمد", email: "mohamed@gmail.com", user: "mohamed", pass: "12345", approved: true, wallet: 500, paidCourses: [991], examAttempts: {} }
+        ];
+
+        let loggedInUser = null;
+        let rechargeCards = [{ code: "QAID-9050", amount: 200, used: false }];
+
+        // طريقة دخول سهلة ومخفية: انقر مرتين بسرعة على عنوان التذييل أو الأيقونة بجانب حقوق النشر
+        function adminSecretLogin() {
+            let pass = prompt("أدخل الرقم السري لبوابة الإدارة:");
+            if(pass === "9090") { showSection('admin-dashboard'); }
+            else if(pass !== null) { alert('الرقم السري غير صحيح!'); }
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.app-section').forEach(sec => sec.classList.add('hidden'));
+            document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
+            let target = document.getElementById('section-' + sectionId);
+            if(target) target.classList.remove('hidden');
+            let nav = document.getElementById('nav-' + sectionId);
+            if(nav) nav.classList.add('active');
+
+            if(sectionId === 'home') renderHomeGrid();
+            if(sectionId === 'subjects') renderSubjectsGrid();
+            if(sectionId === 'private-courses') renderPrivateGrid();
+            if(sectionId === 'instructors') renderInstructorsGrid();
+            if(sectionId === 'student-dashboard') renderStudentDashboard();
+            if(sectionId === 'instructor-dashboard') renderInstructorDashTables();
+            if(sectionId === 'admin-dashboard') renderAdminDashboard();
+            window.scrollTo(0,0);
+        }
+
+        function logout() { loggedInUser = null; showSection('home'); }
+        function toggleStudentAuth() { document.getElementById('student-login-form').classList.toggle('hidden'); document.getElementById('student-register-form').classList.toggle('hidden'); }
+        function toggleInstructorAuth() { document.getElementById('instructor-login-form').classList.toggle('hidden'); document.getElementById('instructor-register-form').classList.toggle('hidden'); }
+
+        function registerStudent() {
+            let name = document.getElementById('reg-st-name').value.trim();
+            let email = document.getElementById('reg-st-email').value.trim();
+            let u = document.getElementById('reg-st-user').value.trim();
+            let p = document.getElementById('reg-st-pass').value.trim();
+            let terms = document.getElementById('st-terms-check').checked;
+            if(!name || !email || !u || !p) { alert('الرجاء تعبئة كافة الحقول.'); return; }
+            if(!terms) { alert('يجب الموافقة على التعهد والمسؤولية القانونية للمتابعة.'); return; }
+            usersList.push({ type: "متدرب", name, email, user: u, pass: p, approved: false, wallet: 0, paidCourses: [], examAttempts: {} });
+            alert('تم إرسال طلب التسجيل بنجاح! بانتظار موافقة الإدارة.');
+            toggleStudentAuth();
+        }
+
+        function registerInstructor() {
+            let name = document.getElementById('reg-inst-name').value.trim();
+            let email = document.getElementById('reg-inst-email').value.trim();
+            let u = document.getElementById('reg-inst-user').value.trim();
+            let p = document.getElementById('reg-inst-pass').value.trim();
+            let terms = document.getElementById('inst-terms-check').checked;
+            if(!name || !email || !u || !p) { alert('الرجاء تعبئة كافة الحقول.'); return; }
+            if(!terms) { alert('يجب الموافقة على شروط المدربين.'); return; }
+            usersList.push({ type: "مدرب", name, email, user: u, pass: p, approved: false });
+            alert('تم إرسال طلب المدرب بنجاح! بانتظار موافقة الإدارة.');
+            toggleInstructorAuth();
+        }
+
+        function loginStudent() {
+            let u = document.getElementById('st-user').value.trim();
+            let p = document.getElementById('st-pass').value.trim();
+            let found = usersList.find(x => x.user === u && x.pass === p && x.type === "متدرب");
+            if(found) {
+                if(!found.approved) { alert('حسابك قيد المراجعة ولم يتم اعتماده بعد.'); return; }
+                loggedInUser = found;
+                if(!loggedInUser.examAttempts) loggedInUser.examAttempts = {};
+                document.getElementById('student-welcome-title').innerText = `لوحة المتدرب: ${found.name}`;
+                showSection('student-dashboard');
+            } else { alert('خطأ في البيانات أو الحساب غير معتمد.'); }
+        }
+
+        function loginInstructor() {
+            let u = document.getElementById('inst-user').value.trim();
+            let p = document.getElementById('inst-pass').value.trim();
+            let found = usersList.find(x => x.user === u && x.pass === p && x.type === "مدرب");
+            if(found) {
+                if(!found.approved) { alert('حساب المدرب لم يتم اعتماده بعد.'); return; }
+                loggedInUser = found;
+                document.getElementById('instructor-welcome-title').innerText = `لوحة المدرب: ${found.name}`;
+                showSection('instructor-dashboard');
+            } else { alert('خطأ في بيانات المدرب أو غير معتمد.'); }
+        }
+
+        function renderHomeGrid() {
+            const grid = document.getElementById('home-courses-grid');
+            if(!grid) return;
+            grid.innerHTML = activeCourses.length ? activeCourses.map(c => `
+                <div class="col-md-4">
+                    <div class="card-custom p-4">
+                        <div>
+                            <span class="badge ${c.type==='subject'?'bg-primary':'bg-success'} mb-2">${c.type==='subject'?'مقرر أكاديمي محاسبي':'دورة قطاع خاص'}</span>
+                            <h5 class="fw-bold mb-2" style="color: var(--royal-blue);">${c.title}</h5>
+                            <p class="text-muted small">${c.desc}</p>
+                            <p class="small mb-1 text-secondary"><strong>المدرب:</strong> ${c.instructor}</p>
+                            <span class="badge bg-secondary mb-2">السعر: ${c.price} د.ل</span>
+                        </div>
+                        <button class="btn btn-sm w-100 mt-2 text-white" style="background-color: var(--royal-blue);" onclick="showSection('student-login')">سجل للاشتراك</button>
+                    </div>
+                </div>`).join('') : '<p class="text-center text-muted">لا توجد مقررات مطروحة حالياً من المدربين.</p>';
+        }
+
+        function renderSubjectsGrid() {
+            const list = document.getElementById('subjects-list');
+            if(!list) return;
+            let subjs = activeCourses.filter(c => c.type === 'subject');
+            list.innerHTML = subjs.length ? subjs.map(s => `<div class="col-md-4"><div class="card-custom p-4"><h4 class="fw-bold">${s.title}</h4><p class="text-muted small">${s.desc}</p><p class="small text-secondary"><strong>المدرب:</strong> ${s.instructor}</p><button class="btn btn-sm text-white w-100" style="background-color: var(--soft-green);" onclick="showSection('student-login')">سجل للمقرر (${s.price} د.ل)</button></div></div>`).join('') : '<p class="text-center text-muted">لا توجد مقررات أكاديمية مطروحة.</p>';
+        }
+
+        function renderPrivateGrid() {
+            const list = document.getElementById('private-courses-list');
+            if(!list) return;
+            let privs = activeCourses.filter(c => c.type === 'private');
+            list.innerHTML = privs.length ? privs.map(c => `<div class="col-md-4"><div class="card-custom p-4"><h4 class="fw-bold">${c.title}</h4><p class="text-muted small">${c.desc}</p><p class="small text-secondary"><strong>المدرب:</strong> ${c.instructor}</p><button class="btn btn-sm text-white w-100" style="background-color: var(--soft-green);" onclick="showSection('student-login')">سجل بالدورة (${c.price} د.ل)</button></div></div>`).join('') : '<p class="text-center text-muted">لا توجد دورات قطاع خاص مطروحة.</p>';
+        }
+
+        function renderInstructorsGrid() {
+            const list = document.getElementById('public-instructors-list');
+            if(!list) return;
+            let insts = usersList.filter(u => u.type === 'مدرب' && u.approved);
+            list.innerHTML = insts.length ? insts.map(i => `<div class="col-md-6"><div class="panel-box border"><h4>${i.name}</h4><p class="text-muted">مدرب معتمد في منصة قَيْد للعلوم المالية والمحاسبية</p></div></div>`).join('') : '<p class="text-center text-muted">لا يوجد مدربون معتمدون حالياً.</p>';
+        }
+
+        // فتح محتوى المقرر (لا يرى شيئاً إلا بعد السداد) وعرض الفيديو الحقيقي وملف الـ DBF المرفوع من هاتف الأستاذ
+        function openCourseDetail(id) {
+            let course = activeCourses.find(x => x.id === id);
+            if(!course || !loggedInUser.paidCourses.includes(id)) { alert('عذراً، المقرر مغلق ولا يمكنك مشاهدة المحتوى إلا بعد سداد الرسوم!'); return; }
+            document.getElementById('detail-course-title').innerText = course.title;
+            document.getElementById('detail-course-desc').innerText = course.desc;
+            let container = document.getElementById('detail-lectures-container');
+            
+            container.innerHTML = course.lectures.length ? course.lectures.map(l => {
+                let videoTag = l.videoUrl ? `<video controls class="w-100 rounded mb-2" style="max-height: 350px; background:#000;"><source src="${l.videoUrl}" type="video/mp4">متصفحك لا يدعم عرض الفيديو</video>` : `<p class="text-muted small">لم يتم رفع فيديو لهذه المحاضرة.</p>`;
+                
+                let dbfDownloadBtn = l.dbfData ? `
+                    <a href="${l.dbfData}" download="${l.dbfName}" class="btn btn-sm btn-outline-primary mt-2">📥 تحميل ملف النظام المرفق (DBF): ${l.dbfName}</a>
+                ` : `<p class="small text-muted mt-2">لا يوجد ملف DBF مرفق.</p>`;
+
+                return `
+                    <div class="p-3 mb-3 bg-light border rounded">
+                        <h5 class="fw-bold" style="color: var(--royal-blue);">${l.title}</h5>
+                        ${videoTag}
+                        ${dbfDownloadBtn}
+                    </div>`;
+            }).join('') : '<p class="text-muted">لم يقم المدرب برفع محاضرات أو ملفات لهذا المقرر بعد.</p>';
+            
+            showSection('course-details');
+        }
+
+        function renderInstructorDashTables() {
+            let selectElem = document.getElementById('predefined-course-select');
+            if(selectElem) {
+                let assignedTitles = activeCourses.map(c => c.title);
+                let pool = masterCoursesPool.filter(m => !assignedTitles.includes(m.title));
+                selectElem.innerHTML = pool.length ? pool.map(m => `<option value="${m.id}">${m.title} (${m.type==='subject'?'مقرر أكاديمي':'دورة'} - ${m.price} د.ل)</option>`).join('') : '<option value="">تم اختيار كافة المقررات والدورات</option>';
+            }
+
+            let myCourses = activeCourses.filter(c => c.instructor === loggedInUser.name);
+            let totalLecturesCount = myCourses.reduce((acc, c) => acc + c.lectures.length, 0);
+            let lecturesEarnings = totalLecturesCount * 15;
+            let coursesEarnings = myCourses.reduce((acc, c) => acc + (c.type === 'private' ? 100 : 10), 0);
+            let totalInstEarnings = lecturesEarnings + coursesEarnings;
+            
+            let earnDisplay = document.getElementById('instructor-earnings-display');
+            if(earnDisplay) earnDisplay.innerText = totalInstEarnings.toFixed(2) + ' د.ل (محاضرات: ' + lecturesEarnings + ' + مقررات ودورات: ' + coursesEarnings + ')';
+
+            let tbody = document.getElementById('instructor-subjects-table');
+            if(!tbody) return;
+            tbody.innerHTML = myCourses.length ? myCourses.map(c => {
+                let actualIndex = activeCourses.indexOf(c);
+                return `
+                    <tr>
+                        <td><code>${c.code}</code></td>
+                        <td class="fw-bold">${c.title}</td>
+                        <td><span class="badge ${c.type==='subject'?'bg-primary':'bg-success'}">${c.type==='subject'?'مقرر':'دورة'}</span></td>
+                        <td>محاضرات مرفوعة: ${c.lectures.length}</td>
+                        <td>
+                            <button class="btn btn-sm text-white mb-1" style="background-color: var(--soft-green);" onclick="openUploadModal(${actualIndex})">📹 رفع فيديو + 📥 ملف DBF</button>
+                        </td>
+                    </tr>`;
+            }).join('') : '<tr><td colspan="5" class="text-center text-muted">ليس لديك مقررات مضافة لجدولك. اختر من القائمة بالأعلى وأضفها.</td></tr>';
+        }
+
+        function assignCourseToInstructor() {
+            let selectElem = document.getElementById('predefined-course-select');
+            let selectedId = parseInt(selectElem.value);
+            let masterCourse = masterCoursesPool.find(m => m.id === selectedId);
+            if(masterCourse) {
+                activeCourses.push({ ...masterCourse, instructor: loggedInUser.name, status: "متاح", lectures: [], exams: { midterm: null, final: null } });
+                alert('تمت إضافة المقرر/الدورة إلى جدولك بنجاح وحجبها عن باقي المدربين!');
+                renderInstructorDashTables();
+            }
+        }
+
+        // رفع الفيديو الحقيقي وملف الـ DBF مباشرة من هاتف الأستاذ أو جهازه
+        function openUploadModal(index) {
+            let title = prompt("أدخل عنوان المحاضرة أو الدرس:");
+            if(!title) return;
+
+            // إنشاء عناصر اختيار الملفات تفاعلياً لكي يختار الأستاذ الفيديو وملف الـ DBF من جهازه أو هاتفه
+            let videoInput = document.createElement('input');
+            videoInput.type = 'file';
+            videoInput.accept = 'video/*';
+
+            let dbfInput = document.createElement('input');
+            dbfInput.type = 'file';
+            dbfInput.accept = '.dbf,application/octet-stream,*';
+
+            videoInput.onchange = function(e1) {
+                let videoFile = e1.target.files[0];
+                let videoUrl = videoFile ? URL.createObjectURL(videoFile) : "";
+
+                dbfInput.onchange = function(e2) {
+                    let dbfFile = e2.target.files[0];
+                    let dbfName = dbfFile ? dbfFile.name : "accounts.dbf";
+                    let dbfData = dbfFile ? URL.createObjectURL(dbfFile) : "";
+
+                    activeCourses[index].lectures.push({ id: Date.now(), title, videoUrl, dbfName, dbfData });
+                    alert('تم رفع الفيديو وملف الـ DBF بنجاح من هاتفك وسيظهر للطالب في مقره!');
+                    renderInstructorDashTables();
+                };
+                
+                alert('الآن اختر ملف النظام (DBF) من هاتفك أو جهازك:');
+                dbfInput.click();
+            };
+
+            alert('الخطوة 1: اختر فيديو الشرح (MP4 أو فيديو من هاتفك):');
+            videoInput.click();
+        }
+
+        function renderStudentDashboard() {
+            document.getElementById('student-wallet-balance').innerText = loggedInUser.wallet.toFixed(2);
+            let container = document.getElementById('student-subscriptions-container');
+            container.innerHTML = activeCourses.map(c => {
+                let isPaid = loggedInUser.paidCourses.includes(c.id);
+                return `
+                    <div class="panel-box border mb-3 d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="fw-bold" style="color: var(--royal-blue);">${c.title}</h5>
+                            <p class="small text-muted mb-1">${c.desc} | المدرب: ${c.instructor}</p>
+                            <span class="badge bg-light text-dark border">الرسوم المطلوبة: ${c.price} د.ل</span>
+                        </div>
+                        <div>
+                            ${isPaid ? `<button class="btn text-white fw-bold btn-sm" style="background-color: var(--soft-green);" onclick="openCourseDetail(${c.id})">🔓 فتح المحتوى والملفات</button>` : `<button class="btn btn-outline-danger fw-bold btn-sm" onclick="payCourse(${c.id}, ${c.price})">🔒 مغلق - سدد (${c.price} د.ل)</button>`}
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        function rechargeByCard() {
+            let code = document.getElementById('recharge-card-input').value.trim();
+            let card = rechargeCards.find(c => c.code === code && !c.used);
+            if(card) {
+                card.used = true;
+                loggedInUser.wallet += card.amount;
+                alert(`تم شحن المحفظة بنجاح بقيمة ${card.amount} د.ل!`);
+                renderStudentDashboard();
+            } else { alert('رقم كارت الشحن غير صحيح أو تم تعبئته واستخدامه مسبقاً.'); }
+        }
+
+        function payCourse(id, price) {
+            if(loggedInUser.wallet < price) { alert('رصيد المحفظة غير كافٍ! يرجى شحن محفظتك عبر الكروت.'); return; }
+            loggedInUser.wallet -= price;
+            loggedInUser.paidCourses.push(id);
+            alert('تم سداد الرسوم بنجاح وفتح محتوى المقرر وملفات النظام!');
+            renderStudentDashboard();
+        }
+
+        function generateRechargeCard() {
+            let amt = parseFloat(document.getElementById('new-card-amount').value);
+            let code = 'QAID-' + Math.floor(1000 + Math.random() * 9000);
+            rechargeCards.push({ code, amount: amt, used: false });
+            alert(`تم توليد كرت الشحن بنجاح:\nالرمز: ${code}\nالقيمة: ${amt} د.ل`);
+            renderAdminDashboard();
+        }
+
+        function renderAdminDashboard() {
+            let totalRevenue = 0;
+            let totalSubs = 0;
+            usersList.filter(u => u.type === 'متدرب').forEach(st => {
+                if(st.paidCourses) {
+                    st.paidCourses.forEach(cid => {
+                        let crs = masterCoursesPool.find(m => m.id === cid);
+                        if(crs) {
+                            totalRevenue += crs.price;
+                            totalSubs++;
+                        }
+                    });
+                }
+            });
+
+            document.getElementById('admin-total-revenue').innerText = totalRevenue.toFixed(2) + ' د.ل';
+            document.getElementById('admin-total-subs').innerText = totalSubs;
+
+            let cardsTbody = document.getElementById('admin-cards-table');
+            if(cardsTbody) {
+                cardsTbody.innerHTML = rechargeCards.map(card => `
+                    <tr>
+                        <td><code>${card.code}</code></td>
+                        <td>${card.amount} د.ل</td>
+                        <td>${card.used ? '<span class="badge bg-danger">تم تعبئة الكارت</span>' : '<span class="badge bg-success">متوفر للاستخدام</span>'}</td>
+                    </tr>`).join('');
+            }
+
+            document.getElementById('admin-pending-students').innerHTML = usersList.filter(u => u.type === 'متدرب' && !u.approved).map(st => `
+                <tr><td>${st.name}</td><td>${st.email}</td><td><code>${st.user}</code></td><td><button class="btn btn-sm btn-success" onclick="approveStudent('${st.user}')">قبول متدرب</button></td></tr>`).join('') || '<tr><td colspan="4" class="text-center text-muted">لا توجد طلبات معلقة.</td></tr>';
+
+            document.getElementById('admin-students-list-table').innerHTML = usersList.filter(u => u.type === 'متدرب' && u.approved).map(st => `
+                <tr><td>${st.name}</td><td>${st.email}</td><td><code>${st.user}</code></td><td><input type="password" value="${st.pass}" readonly class="form-control form-control-sm bg-light" style="width:100px; display:inline-block;"></td><td><span class="badge bg-success">معتمد</span></td></tr>`).join('') || '<tr><td colspan="5" class="text-center text-muted">لا يوجد طلاب معتمدون.</td></tr>';
+
+            document.getElementById('admin-pending-instructors').innerHTML = usersList.filter(u => u.type === 'مدرب' && !u.approved).map(i => `
+                <tr><td>${i.name}</td><td>${i.email}</td><td><button class="btn btn-sm btn-success" onclick="approveInstructor('${i.user}')">قبول مدرب</button></td></tr>`).join('') || '<tr><td colspan="3" class="text-center text-muted">لا توجد طلبات مدربين معلقة.</td></tr>';
+
+            document.getElementById('admin-instructors-list-table').innerHTML = usersList.filter(u => u.type === 'مدرب' && u.approved).map(i => `
+                <tr><td>${i.name}</td><td>${i.email}</td><td><code>${i.user}</code></td><td><input type="password" value="${i.pass}" readonly class="form-control form-control-sm bg-light" style="width:100px; display:inline-block;"></td><td><span class="badge bg-success">معتمد</span></td></tr>`).join('') || '<tr><td colspan="5" class="text-center text-muted">لا يوجد مدربون معتمدون.</td></tr>';
+        }
+
+        function approveStudent(uName) {
+            let u = usersList.find(x => x.user === uName && x.type === 'متدرب');
+            if(u) { u.approved = true; alert('تم اعتماد المتدرب بنجاح!'); renderAdminDashboard(); }
+        }
+
+        function approveInstructor(uName) {
+            let u = usersList.find(x => x.user === uName && x.type === 'مدرب');
+            if(u) { u.approved = true; alert('تم اعتماد المدرب بنجاح!'); renderAdminDashboard(); }
+        }
+
+        window.onload = function() { showSection('home'); };
+    </script>
+</body>
+</html>
