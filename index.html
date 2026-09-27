@@ -28,7 +28,6 @@
         .hidden { display: none !important; }
         .terms-box { max-height: 130px; overflow-y: auto; background: #fff5f5; border: 1px solid #f5c6cb; color: #721c24; padding: 12px; font-size: 0.85rem; border-radius: 6px; margin-bottom: 15px; text-align: start; }
         table th, table td { text-align: right; vertical-align: middle; white-space: nowrap; }
-        /* زر مخفي تماماً للزوار لدخول الإدارة بالنقر المزدوج */
         .secret-admin-trigger { color: #1e3d59; user-select: none; cursor: default; }
     </style>
 </head>
@@ -88,7 +87,7 @@
         <div class="row g-4" id="private-courses-list"></div>
     </div>
 
-    <!-- صفحة عرض محتوى المقرر أو الدورة للمتدرب (مشاهدة الفيديو وتحميل الملف مباشرة) -->
+    <!-- صفحة عرض محتوى المقرر أو الدورة للمتدرب -->
     <div id="section-course-details" class="app-section hidden container my-5">
         <button class="btn btn-outline-secondary btn-sm mb-3" onclick="showSection('student-dashboard')">← عودة لوحة المتدرب</button>
         <div class="panel-box">
@@ -191,7 +190,7 @@
         </div>
     </div>
 
-    <!-- لوحة تحكم المدرب (رفع الفيديوهات وملفات DBF من هاتف الأستاذ مباشرة) -->
+    <!-- لوحة تحكم المدرب (رفع ملف الفيديو الفعلي وملف DBF مباشرة) -->
     <div id="section-instructor-dashboard" class="app-section hidden container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="section-title m-0" style="color: var(--soft-green);" id="instructor-welcome-title">لوحة تحكم الأستاذ المدرب</h2>
@@ -213,7 +212,7 @@
         </div>
 
         <div class="panel-box mb-4">
-            <h4 class="fw-bold mb-3" style="color: var(--royal-blue);">📖 مقرراتي ودوراتي المطروحة (رفع الفيديو وملف DBF من الهاتف)</h4>
+            <h4 class="fw-bold mb-3" style="color: var(--royal-blue);">📖 مقرراتي ودوراتي المطروحة (رفع ملف الفيديو وملف DBF مباشرة)</h4>
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
                     <thead class="table-light"><tr><th>الكود</th><th>المقرر / الدورة</th><th>النوع</th><th>المحتويات والدروس</th><th>الإجراءات</th></tr></thead>
@@ -223,29 +222,41 @@
         </div>
     </div>
 
-    <!-- لوحة تحكم الإدارة -->
+    <!-- لوحة تحكم الإدارة (مع قائمة الدخل الشاملة وإمكانية الحذف) -->
     <div id="section-admin-dashboard" class="app-section hidden container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="section-title text-success m-0">بوابة الإدارة المركزية</h2>
             <button class="btn btn-outline-danger btn-sm" onclick="logout()">تسجيل خروج</button>
         </div>
 
-        <!-- قسم الحسابات والدخل المالي للإدارة -->
+        <!-- قائمة الدخل الشاملة للمنصة -->
         <div class="panel-box mb-4 border-success" style="background: #f4faf6;">
-            <h4 class="fw-bold mb-3 text-success">📊 الحسابات والدخل المالي العام للمنصة</h4>
-            <div class="row text-center">
-                <div class="col-md-6 mb-2">
+            <h4 class="fw-bold mb-3 text-success">📋 قائمة الدخل الشاملة والإيرادات</h4>
+            <div class="row text-center mb-3">
+                <div class="col-md-4 mb-2">
                     <div class="p-3 bg-white rounded border">
-                        <h5>إجمالي إيرادات الرسوم المحصلة</h5>
-                        <h3 class="text-success" id="admin-total-revenue">0.00 د.ل</h3>
+                        <h6 class="text-muted">إجمالي إيرادات الرسوم</h6>
+                        <h3 class="text-success" id="income-total-revenue">0.00 د.ل</h3>
                     </div>
                 </div>
-                <div class="col-md-6 mb-2">
+                <div class="col-md-4 mb-2">
                     <div class="p-3 bg-white rounded border">
-                        <h5>عدد الاشتراكات الناجحة للطلاب</h5>
-                        <h3 class="text-primary" id="admin-total-subs">0</h3>
+                        <h6 class="text-muted">عدد اشتراكات الطلاب</h6>
+                        <h3 class="text-primary" id="income-total-subs">0</h3>
                     </div>
                 </div>
+                <div class="col-md-4 mb-2">
+                    <div class="p-3 bg-white rounded border">
+                        <h6 class="text-muted">صافي التدفق المالي</h6>
+                        <h3 class="text-success" id="income-net-flow">0.00 د.ل</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered bg-white">
+                    <thead class="table-light"><tr><th>بند الإيراد / النشاط</th><th>عدد العمليات</th>, <th>إجمالي المبلغ المحصل</th></tr></thead>
+                    <tbody id="income-statement-table"></tbody>
+                </table>
             </div>
         </div>
         
@@ -264,26 +275,26 @@
             </div>
         </div>
 
-        <!-- إدارة المتدربين -->
+        <!-- إدارة المتدربين (مع زر الحذف) -->
         <div class="panel-box mb-4 border-info">
-            <h4 class="fw-bold mb-3 text-primary">👨‍🎓 إدارة المتدربين (الطلبات والأرقام السرية المخفية والكشوفات)</h4>
+            <h4 class="fw-bold mb-3 text-primary">👨‍🎓 إدارة المتدربين (الطلبات، الأرقام السرية، والحذف)</h4>
             <h5 class="text-secondary mb-2">⏳ طلبات تسجيل المتدربين المعلقة</h5>
             <div class="table-responsive mb-4"><table class="table table-hover align-middle"><thead class="table-light"><tr><th>الاسم</th><th>البريد</th><th>اسم المستخدم</th><th>الإجراء</th></tr></thead><tbody id="admin-pending-students"></tbody></table></div>
             <h5 class="text-secondary mb-2">📋 كشف المتدربين المعتمدين</h5>
-            <div class="table-responsive"><table class="table table-hover align-middle"><thead class="table-light"><tr><th>الاسم</th><th>البريد</th><th>اسم المستخدم</th><th>كلمة المرور</th><th>الحالة</th></tr></thead><tbody id="admin-students-list-table"></tbody></table></div>
+            <div class="table-responsive"><table class="table table-hover align-middle"><thead class="table-light"><tr><th>الاسم</th><th>البريد</th><th>اسم المستخدم</th><th>كلمة المرور</th><th>الحالة</th><th>الإجراء</th></tr></thead><tbody id="admin-students-list-table"></tbody></table></div>
         </div>
 
-        <!-- إدارة المدربين -->
+        <!-- إدارة المدربين (مع زر الحذف) -->
         <div class="panel-box mb-4 border-success">
-            <h4 class="fw-bold mb-3 text-success">👨‍🏫 إدارة المدربين (الطلبات والأرقام السرية المخفية والكشوفات)</h4>
+            <h4 class="fw-bold mb-3 text-success">👨‍🏫 إدارة المدربين (الطلبات، الأرقام السرية، والحذف)</h4>
             <h5 class="text-secondary mb-2">⏳ طلبات تسجيل المدربين المعلقة</h5>
             <div class="table-responsive mb-4"><table class="table table-hover align-middle"><thead class="table-light"><tr><th>الاسم</th><th>البريد</th><th>الإجراء</th></tr></thead><tbody id="admin-pending-instructors"></tbody></table></div>
             <h5 class="text-secondary mb-2">📋 كشف المدربين المعتمدين</h5>
-            <div class="table-responsive"><table class="table table-hover align-middle"><thead class="table-light"><tr><th>الاسم</th><th>البريد</th><th>اسم المستخدم</th><th>كلمة المرور</th><th>الحالة</th></tr></thead><tbody id="admin-instructors-list-table"></tbody></table></div>
+            <div class="table-responsive"><table class="table table-hover align-middle"><thead class="table-light"><tr><th>الاسم</th><th>البريد</th><th>اسم المستخدم</th><th>كلمة المرور</th><th>الحالة</th><th>الإجراء</th></tr></thead><tbody id="admin-instructors-list-table"></tbody></table></div>
         </div>
     </div>
 
-    <!-- التذييل (مع زر مخفي وسهل لدخول الإدارة بالنقر المزدوج على كلمة منصة قيد في التذييل) -->
+    <!-- التذييل -->
     <footer class="text-center py-4 text-white" style="background-color: var(--royal-blue-dark);">
         <div class="container">
             <h5 ondblclick="adminSecretLogin()" style="cursor: pointer;" title="انقر مرتين هنا للدخول">منصة قَيْد التعليمية للمحاسبة والعلوم المالية</h5>
@@ -342,7 +353,6 @@
         let loggedInUser = null;
         let rechargeCards = [{ code: "QAID-9050", amount: 200, used: false }];
 
-        // طريقة دخول سهلة ومخفية: انقر مرتين بسرعة على عنوان التذييل أو الأيقونة بجانب حقوق النشر
         function adminSecretLogin() {
             let pass = prompt("أدخل الرقم السري لبوابة الإدارة:");
             if(pass === "9090") { showSection('admin-dashboard'); }
@@ -461,7 +471,6 @@
             list.innerHTML = insts.length ? insts.map(i => `<div class="col-md-6"><div class="panel-box border"><h4>${i.name}</h4><p class="text-muted">مدرب معتمد في منصة قَيْد للعلوم المالية والمحاسبية</p></div></div>`).join('') : '<p class="text-center text-muted">لا يوجد مدربون معتمدون حالياً.</p>';
         }
 
-        // فتح محتوى المقرر (لا يرى شيئاً إلا بعد السداد) وعرض الفيديو الحقيقي وملف الـ DBF المرفوع من هاتف الأستاذ
         function openCourseDetail(id) {
             let course = activeCourses.find(x => x.id === id);
             if(!course || !loggedInUser.paidCourses.includes(id)) { alert('عذراً، المقرر مغلق ولا يمكنك مشاهدة المحتوى إلا بعد سداد الرسوم!'); return; }
@@ -470,7 +479,7 @@
             let container = document.getElementById('detail-lectures-container');
             
             container.innerHTML = course.lectures.length ? course.lectures.map(l => {
-                let videoTag = l.videoUrl ? `<video controls class="w-100 rounded mb-2" style="max-height: 350px; background:#000;"><source src="${l.videoUrl}" type="video/mp4">متصفحك لا يدعم عرض الفيديو</video>` : `<p class="text-muted small">لم يتم رفع فيديو لهذه المحاضرة.</p>`;
+                let videoTag = l.videoUrl ? `<video controls class="w-100 rounded mb-2" style="max-height: 350px; background:#000;"><source src="${l.videoUrl}" type="video/mp4">متصفحك لا يدعم عرض الفيديو</video>` : `<p class="text-muted small">لم يتم رفع ملف فيديو لهذه المحاضرة.</p>`;
                 
                 let dbfDownloadBtn = l.dbfData ? `
                     <a href="${l.dbfData}" download="${l.dbfName}" class="btn btn-sm btn-outline-primary mt-2">📥 تحميل ملف النظام المرفق (DBF): ${l.dbfName}</a>
@@ -515,7 +524,7 @@
                         <td><span class="badge ${c.type==='subject'?'bg-primary':'bg-success'}">${c.type==='subject'?'مقرر':'دورة'}</span></td>
                         <td>محاضرات مرفوعة: ${c.lectures.length}</td>
                         <td>
-                            <button class="btn btn-sm text-white mb-1" style="background-color: var(--soft-green);" onclick="openUploadModal(${actualIndex})">📹 رفع فيديو + 📥 ملف DBF</button>
+                            <button class="btn btn-sm text-white mb-1" style="background-color: var(--soft-green);" onclick="openUploadModal(${actualIndex})">📹 رفع ملف فيديو + 📥 ملف DBF</button>
                         </td>
                     </tr>`;
             }).join('') : '<tr><td colspan="5" class="text-center text-muted">ليس لديك مقررات مضافة لجدولك. اختر من القائمة بالأعلى وأضفها.</td></tr>';
@@ -532,12 +541,11 @@
             }
         }
 
-        // رفع الفيديو الحقيقي وملف الـ DBF مباشرة من هاتف الأستاذ أو جهازه
+        // رفع ملف الفيديو الحقيقي مباشرة من الهاتف أو الجهاز (بدل الروابط)
         function openUploadModal(index) {
             let title = prompt("أدخل عنوان المحاضرة أو الدرس:");
             if(!title) return;
 
-            // إنشاء عناصر اختيار الملفات تفاعلياً لكي يختار الأستاذ الفيديو وملف الـ DBF من جهازه أو هاتفه
             let videoInput = document.createElement('input');
             videoInput.type = 'file';
             videoInput.accept = 'video/*';
@@ -555,16 +563,16 @@
                     let dbfName = dbfFile ? dbfFile.name : "accounts.dbf";
                     let dbfData = dbfFile ? URL.createObjectURL(dbfFile) : "";
 
-                    activeCourses[index].lectures.push({ id: Date.now(), title, videoUrl, dbfName, dbfData });
-                    alert('تم رفع الفيديو وملف الـ DBF بنجاح من هاتفك وسيظهر للطالب في مقره!');
+                    activeCourses[index].lectures.push({ id: Date.Now ? Date.now() : new Date().getTime(), title, videoUrl, dbfName, dbfData });
+                    alert('تم رفع ملف الفيديو الفعلي وملف الـ DBF بنجاح من هاتفك وسيظهر للطالب مباشرة!');
                     renderInstructorDashTables();
                 };
                 
-                alert('الآن اختر ملف النظام (DBF) من هاتفك أو جهازك:');
+                alert('الخطوة 2: اختر ملف النظام (DBF):');
                 dbfInput.click();
             };
 
-            alert('الخطوة 1: اختر فيديو الشرح (MP4 أو فيديو من هاتفك):');
+            alert('الخطوة 1: اختر ملف الفيديو المرئي (MP4 أو فيديو من هاتفك):');
             videoInput.click();
         }
 
@@ -617,6 +625,8 @@
         function renderAdminDashboard() {
             let totalRevenue = 0;
             let totalSubs = 0;
+            let incomeBreakdown = {};
+
             usersList.filter(u => u.type === 'متدرب').forEach(st => {
                 if(st.paidCourses) {
                     st.paidCourses.forEach(cid => {
@@ -624,13 +634,37 @@
                         if(crs) {
                             totalRevenue += crs.price;
                             totalSubs++;
+                            if(!incomeBreakdown[crs.title]) {
+                                incomeBreakdown[crs.title] = { count: 0, total: 0 };
+                            }
+                            incomeBreakdown[crs.title].count++;
+                            incomeBreakdown[crs.title].total += crs.price;
                         }
                     });
                 }
             });
 
-            document.getElementById('admin-total-revenue').innerText = totalRevenue.toFixed(2) + ' د.ل';
-            document.getElementById('admin-total-subs').innerText = totalSubs;
+            document.getElementById('income-total-revenue').innerText = totalRevenue.toFixed(2) + ' د.ل';
+            document.getElementById('income-total-subs').innerText = totalSubs;
+            document.getElementById('income-net-flow').innerText = totalRevenue.toFixed(2) + ' د.ل';
+
+            let incomeTable = document.getElementById('income-statement-table');
+            if(incomeTable) {
+                let keys = Object.keys(incomeBreakdown);
+                incomeTable.innerHTML = keys.length ? keys.map(title => `
+                    <tr>
+                        <td>اشتراكات مقرر/دورة: ${title}</td>
+                        <td>${incomeBreakdown[title].count}</td>
+                        <td>${incomeBreakdown[title].total.toFixed(2)} د.ل</td>
+                    </tr>
+                `).join('') + `
+                    <tr class="table-light fw-bold">
+                        <td>الإجمالي العام للإيرادات</td>
+                        <td>${totalSubs}</td>
+                        <td class="text-success">${totalRevenue.toFixed(2)} د.ل</td>
+                    </tr>
+                ` : '<tr><td colspan="3" class="text-center text-muted">لا توجد إيرادات مسجلة حتى الآن.</td></tr>';
+            }
 
             let cardsTbody = document.getElementById('admin-cards-table');
             if(cardsTbody) {
@@ -643,16 +677,45 @@
             }
 
             document.getElementById('admin-pending-students').innerHTML = usersList.filter(u => u.type === 'متدرب' && !u.approved).map(st => `
-                <tr><td>${st.name}</td><td>${st.email}</td><td><code>${st.user}</code></td><td><button class="btn btn-sm btn-success" onclick="approveStudent('${st.user}')">قبول متدرب</button></td></tr>`).join('') || '<tr><td colspan="4" class="text-center text-muted">لا توجد طلبات معلقة.</td></tr>';
+                <tr>
+                    <td>${st.name}</td>
+                    <td>${st.email}</td>
+                    <td><code>${st.user}</code></td>
+                    <td>
+                        <button class="btn btn-sm btn-success me-1" onclick="approveStudent('${st.user}')">قبول</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteUser('${st.user}')">حذف</button>
+                    </td>
+                </tr>`).join('') || '<tr><td colspan="4" class="text-center text-muted">لا توجد طلبات معلقة.</td></tr>';
 
             document.getElementById('admin-students-list-table').innerHTML = usersList.filter(u => u.type === 'متدرب' && u.approved).map(st => `
-                <tr><td>${st.name}</td><td>${st.email}</td><td><code>${st.user}</code></td><td><input type="password" value="${st.pass}" readonly class="form-control form-control-sm bg-light" style="width:100px; display:inline-block;"></td><td><span class="badge bg-success">معتمد</span></td></tr>`).join('') || '<tr><td colspan="5" class="text-center text-muted">لا يوجد طلاب معتمدون.</td></tr>';
+                <tr>
+                    <td>${st.name}</td>
+                    <td>${st.email}</td>
+                    <td><code>${st.user}</code></td>
+                    <td><input type="password" value="${st.pass}" readonly class="form-control form-control-sm bg-light" style="width:100px; display:inline-block;"></td>
+                    <td><span class="badge bg-success">معتمد</span></td>
+                    <td><button class="btn btn-sm btn-danger" onclick="deleteUser('${st.user}')">حذف المتدرب</button></td>
+                </tr>`).join('') || '<tr><td colspan="6" class="text-center text-muted">لا يوجد طلاب معتمدون.</td></tr>';
 
             document.getElementById('admin-pending-instructors').innerHTML = usersList.filter(u => u.type === 'مدرب' && !u.approved).map(i => `
-                <tr><td>${i.name}</td><td>${i.email}</td><td><button class="btn btn-sm btn-success" onclick="approveInstructor('${i.user}')">قبول مدرب</button></td></tr>`).join('') || '<tr><td colspan="3" class="text-center text-muted">لا توجد طلبات مدربين معلقة.</td></tr>';
+                <tr>
+                    <td>${i.name}</td>
+                    <td>${i.email}</td>
+                    <td>
+                        <button class="btn btn-sm btn-success me-1" onclick="approveInstructor('${i.user}')">قبول</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteUser('${i.user}')">حذف</button>
+                    </td>
+                </tr>`).join('') || '<tr><td colspan="3" class="text-center text-muted">لا توجد طلبات مدربين معلقة.</td></tr>';
 
             document.getElementById('admin-instructors-list-table').innerHTML = usersList.filter(u => u.type === 'مدرب' && u.approved).map(i => `
-                <tr><td>${i.name}</td><td>${i.email}</td><td><code>${i.user}</code></td><td><input type="password" value="${i.pass}" readonly class="form-control form-control-sm bg-light" style="width:100px; display:inline-block;"></td><td><span class="badge bg-success">معتمد</span></td></tr>`).join('') || '<tr><td colspan="5" class="text-center text-muted">لا يوجد مدربون معتمدون.</td></tr>';
+                <tr>
+                    <td>${i.name}</td>
+                    <td>${i.email}</td>
+                    <td><code>${i.user}</code></td>
+                    <td><input type="password" value="${i.pass}" readonly class="form-control form-control-sm bg-light" style="width:100px; display:inline-block;"></td>
+                    <td><span class="badge bg-success">معتمد</span></td>
+                    <td><button class="btn btn-sm btn-danger" onclick="deleteUser('${i.user}')">حذف المدرب</button></td>
+                </tr>`).join('') || '<tr><td colspan="6" class="text-center text-muted">لا يوجد مدربون معتمدون.</td></tr>';
         }
 
         function approveStudent(uName) {
@@ -663,6 +726,15 @@
         function approveInstructor(uName) {
             let u = usersList.find(x => x.user === uName && x.type === 'مدرب');
             if(u) { u.approved = true; alert('تم اعتماد المدرب بنجاح!'); renderAdminDashboard(); }
+        }
+
+        // دالة حذف طالب أو مدرب نهائياً من القائمة
+        function deleteUser(uName) {
+            if(confirm('هل أنت متأكد من رغبتك في حذف هذا المستخدم نهائياً؟')) {
+                usersList = usersList.filter(x => x.user !== uName);
+                alert('تم حذف المستخدم بنجاح.');
+                renderAdminDashboard();
+            }
         }
 
         window.onload = function() { showSection('home'); };
