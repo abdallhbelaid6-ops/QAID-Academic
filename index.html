@@ -352,7 +352,6 @@
             appId: "1:969831945382:web:94aa20e61c97402cf4d067"
         };
 
-        // تهيئة الاتصال بقاعدة البيانات السحابية
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         console.log("تم الاتصال بسحابة Firebase بنجاح!");
@@ -394,13 +393,25 @@
             }
         ];
 
-        let usersList = [
-            { type: "مدرب", name: "أ. عبدالله امحمد بلعيد لسود", email: "abdullah@gmail.com", user: "abdullah", pass: "12345", approved: true },
-            { type: "متدرب", name: "محمد أحمد", email: "mohamed@gmail.com", user: "mohamed", pass: "12345", approved: true, wallet: 500, paidCourses: [991], examAttempts: {} }
-        ];
-
+        let usersList = [];
         let loggedInUser = null;
         let rechargeCards = [{ code: "QAID-9050", amount: 200, used: false }];
+
+        // جلب البيانات لحظياً من سحابة Firestore عند فتح الموقع
+        function syncDataFromCloud() {
+            db.collection("users").onSnapshot((snapshot) => {
+                usersList = [];
+                snapshot.forEach((doc) => {
+                    usersList.push(doc.data());
+                });
+                // إضافة حساب الافتراضي إذا كانت السحابة فارغة
+                if(usersList.length === 0) {
+                    let defaultAdmin = { type: "مدرب", name: "أ. عبدالله امحمد بلعيد لسود", email: "abdullah@gmail.com", user: "abdullah", pass: "12345", approved: true };
+                    db.collection("users").doc("abdullah").set(defaultAdmin);
+                }
+            });
+        }
+        syncDataFromCloud();
 
         function adminSecretLogin() {
             let pass = prompt("أدخل الرقم السري لبوابة الإدارة:");
@@ -430,7 +441,8 @@
         function toggleStudentAuth() { document.getElementById('student-login-form').classList.toggle('hidden'); document.getElementById('student-register-form').classList.toggle('hidden'); }
         function toggleInstructorAuth() { document.getElementById('instructor-login-form').classList.toggle('hidden'); document.getElementById('instructor-register-form').classList.toggle('hidden'); }
 
-        function registerStudent() {
+        // إرسال طلب تسجيل المتدرب إلى السحابة فوراً
+        async function registerStudent() {
             let name = document.getElementById('reg-st-name').value.trim();
             let email = document.getElementById('reg-st-email').value.trim();
             let u = document.getElementById('reg-st-user').value.trim();
@@ -438,12 +450,20 @@
             let terms = document.getElementById('st-terms-check').checked;
             if(!name || !email || !u || !p) { alert('الرجاء تعبئة كافة الحقول.'); return; }
             if(!terms) { alert('يجب الموافقة على التعهد والمسؤولية القانونية للمتابعة.'); return; }
-            usersList.push({ type: "متدرب", name, email, user: u, pass: p, approved: false, wallet: 0, paidCourses: [], examAttempts: {} });
-            alert('تم إرسال طلب التسجيل بنجاح! بانتظار موافقة الإدارة.');
-            toggleStudentAuth();
+            
+            try {
+                await db.collection("users").doc(u).set({
+                    type: "متدرب", name, email, user: u, pass: p, approved: false, wallet: 0, paidCourses: [], examAttempts: {}
+                });
+                alert('تم إرسال طلب التسجيل إلى السحابة بنجاح! بانتظار موافقة الإدارة.');
+                toggleStudentAuth();
+            } catch(err) {
+                alert('حدث خطأ أثناء الاتصال بالسحابة: ' + err.message);
+            }
         }
 
-        function registerInstructor() {
+        // إرسال طلب تسجيل المدرب إلى السحابة فوراً
+        async function registerInstructor() {
             let name = document.getElementById('reg-inst-name').value.trim();
             let email = document.getElementById('reg-inst-email').value.trim();
             let u = document.getElementById('reg-inst-user').value.trim();
@@ -451,9 +471,16 @@
             let terms = document.getElementById('inst-terms-check').checked;
             if(!name || !email || !u || !p) { alert('الرجاء تعبئة كافة الحقول.'); return; }
             if(!terms) { alert('يجب الموافقة على شروط المدربين.'); return; }
-            usersList.push({ type: "مدرب", name, email, user: u, pass: p, approved: false });
-            alert('تم إرسال طلب المدرب بنجاح! بانتظار موافقة الإدارة.');
-            toggleInstructorAuth();
+            
+            try {
+                await db.collection("users").doc(u).set({
+                    type: "مدرب", name, email, user: u, pass: p, approved: false
+                });
+                alert('تم إرسال طلب المدرب إلى السحابة بنجاح! بانتظار موافقة الإدارة.');
+                toggleInstructorAuth();
+            } catch(err) {
+                alert('حدث خطأ أثناء الاتصال بالسحابة: ' + err.message);
+            }
         }
 
         function loginStudent() {
@@ -466,7 +493,7 @@
                 if(!loggedInUser.examAttempts) loggedInUser.examAttempts = {};
                 document.getElementById('student-welcome-title').innerText = `لوحة المتدرب: ${found.name}`;
                 showSection('student-dashboard');
-            } else { alert('خطأ في البيانات أو الحساب غير معتمد.'); }
+            } else { alert('خطأ في البيانات أو الحساب غير معتمد سحابياً.'); }
         }
 
         function loginInstructor() {
@@ -478,7 +505,7 @@
                 loggedInUser = found;
                 document.getElementById('instructor-welcome-title').innerText = `لوحة المدرب: ${found.name}`;
                 showSection('instructor-dashboard');
-            } else { alert('خطأ في بيانات المدرب أو غير معتمد.'); }
+            } else { alert('خطأ في بيانات المدرب أو غير معتمد سحابياً.'); }
         }
 
         function renderHomeGrid() {
@@ -529,10 +556,7 @@
             
             container.innerHTML = course.lectures.length ? course.lectures.map(l => {
                 let videoTag = l.videoUrl ? `<video controls class="w-100 rounded mb-2" style="max-height: 350px; background:#000;"><source src="${l.videoUrl}" type="video/mp4">متصفحك لا يدعم عرض الفيديو</video>` : `<p class="text-muted small">لم يتم رفع ملف فيديو لهذه المحاضرة.</p>`;
-                
-                let dbfDownloadBtn = l.dbfData ? `
-                    <a href="${l.dbfData}" download="${l.dbfName}" class="btn btn-sm btn-outline-primary mt-2">📥 تحميل ملف النظام المرفق (DBF): ${l.dbfName}</a>
-                ` : `<p class="small text-muted mt-2">لا يوجد ملف DBF مرفق.</p>`;
+                let dbfDownloadBtn = l.dbfData ? `<a href="${l.dbfData}" download="${l.dbfName}" class="btn btn-sm btn-outline-primary mt-2">📥 تحميل ملف النظام المرفق (DBF): ${l.dbfName}</a>` : `<p class="small text-muted mt-2">لا يوجد ملف DBF مرفق.</p>`;
 
                 return `
                     <div class="p-3 mb-3 bg-light border rounded">
@@ -573,9 +597,7 @@
                         <td class="fw-bold">${c.title}</td>
                         <td><span class="badge ${c.type==='subject'?'bg-primary':'bg-success'}">${c.type==='subject'?'مقرر':'دورة'}</span></td>
                         <td>${lecturesListText}</td>
-                        <td>
-                            <button class="btn btn-sm text-white mb-1" style="background-color: var(--soft-green);" onclick="openUploadModal(${actualIndex})">➕ إضافة محاضرة (فيديو + DBF)</button>
-                        </td>
+                        <td><button class="btn btn-sm text-white mb-1" style="background-color: var(--soft-green);" onclick="openUploadModal(${actualIndex})">➕ إضافة محاضرة (فيديو + DBF)</button></td>
                     </tr>`;
             }).join('') : '<tr><td colspan="5" class="text-center text-muted">ليس لديك مقررات مضافة لجدولك. اختر من القائمة بالأعلى وأضفها.</td></tr>';
         }
@@ -648,15 +670,23 @@
             if(card) {
                 card.used = true;
                 loggedInUser.wallet += card.amount;
+                // تحديث رصيد الطالب سحابياً
+                db.collection("users").doc(loggedInUser.user).update({ wallet: loggedInUser.wallet });
                 alert(`تم شحن المحفظة بنجاح بقيمة ${card.amount} د.ل!`);
                 renderStudentDashboard();
             } else { alert('رقم كارت الشحن غير صحيح أو تم تعبئته واستخدامه مسبقاً.'); }
         }
 
-        function payCourse(id, price) {
+        async function payCourse(id, price) {
             if(loggedInUser.wallet < price) { alert('رصيد المحفظة غير كافٍ! يرجى شحن محفظتك عبر الكروت.'); return; }
             loggedInUser.wallet -= price;
             loggedInUser.paidCourses.push(id);
+            
+            await db.collection("users").doc(loggedInUser.user).update({
+                wallet: loggedInUser.wallet,
+                paidCourses: loggedInUser.paidCourses
+            });
+
             alert('تم سداد الرسوم بنجاح وفتح محتوى المقرر وملفات النظام!');
             renderStudentDashboard();
         }
@@ -669,21 +699,35 @@
             renderAdminDashboard();
         }
 
-        function approveStudent(username) {
-            let user = usersList.find(u => u.user === username);
-            if(user) { user.approved = true; alert('تم اعتماد المتدرب بنجاح!'); renderAdminDashboard(); }
+        // الاعتماد السحابي للمتدرب
+        async function approveStudent(username) {
+            try {
+                await db.collection("users").doc(username).update({ approved: true });
+                alert('تم اعتماد المتدرب سحابياً بنجاح!');
+            } catch(err) {
+                alert('خطأ في الاعتماد: ' + err.message);
+            }
         }
 
-        function approveInstructor(username) {
-            let user = usersList.find(u => u.user === username);
-            if(user) { user.approved = true; alert('تم اعتماد المدرب بنجاح!'); renderAdminDashboard(); }
+        // الاعتماد السحابي للمدرب (سيظهر فوراً وبشكل حقيقي)
+        async function approveInstructor(username) {
+            try {
+                await db.collection("users").doc(username).update({ approved: true });
+                alert('تم اعتماد المدرب سحابياً بنجاح!');
+            } catch(err) {
+                alert('خطأ في الاعتماد: ' + err.message);
+            }
         }
 
-        function deleteUser(username) {
-            if(confirm('هل أنت متأكد من حذف هذا المستخدم نهائياً؟')) {
-                usersList = usersList.filter(u => u.user !== username);
-                alert('تم الحذف بنجاح.');
-                renderAdminDashboard();
+        // الحذف السحابي للمستخدم
+        async function deleteUser(username) {
+            if(confirm('هل أنت متأكد من حذف هذا المستخدم نهائياً من السحابة؟')) {
+                try {
+                    await db.collection("users").doc(username).delete();
+                    alert('تم الحذف بنجاح.');
+                } catch(err) {
+                    alert('خطأ أثناء الحذف: ' + err.message);
+                }
             }
         }
 
