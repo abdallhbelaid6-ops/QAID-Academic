@@ -190,7 +190,7 @@
         </div>
     </div>
 
-    <!-- لوحة تحكم المدرب (رفع ملف الفيديو الفعلي وملف DBF مباشرة) -->
+    <!-- لوحة تحكم المدرب -->
     <div id="section-instructor-dashboard" class="app-section hidden container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="section-title m-0" style="color: var(--soft-green);" id="instructor-welcome-title">لوحة تحكم الأستاذ المدرب</h2>
@@ -212,7 +212,7 @@
         </div>
 
         <div class="panel-box mb-4">
-            <h4 class="fw-bold mb-3" style="color: var(--royal-blue);">📖 مقرراتي ودوراتي المطروحة (رفع ملف الفيديو وملف DBF مباشرة)</h4>
+            <h4 class="fw-bold mb-3" style="color: var(--royal-blue);">📖 مقرراتي ودوراتي المطروحة (إضافة فيديوهات وملفات لكل محاضرة)</h4>
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
                     <thead class="table-light"><tr><th>الكود</th><th>المقرر / الدورة</th><th>النوع</th><th>المحتويات والدروس</th><th>الإجراءات</th></tr></thead>
@@ -222,7 +222,38 @@
         </div>
     </div>
 
-    <!-- لوحة تحكم الإدارة (مع قائمة الدخل الشاملة وإمكانية الحذف) -->
+    <!-- نافذة رفع المحاضرة وتحميل الملفات من الكمبيوتر أو الهاتف -->
+    <div class="modal fade" id="uploadLectureModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">📥 رفع محاضرة جديدة (فيديو وملفات من الجهاز)</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="upload-course-index">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">عنوان المحاضرة / الدرس:</label>
+                        <input type="text" id="modal-lecture-title" class="form-control" placeholder="مثلاً: المحاضرة الأولى - القيود الافتتاحية">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">اختر ملف الفيديو (MP4 / فيديو من الجهاز):</label>
+                        <input type="file" id="modal-video-file" class="form-control" accept="video/*">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">اختر ملف النظام المرفق (DBF أو ملفات أخرى):</label>
+                        <input type="file" id="modal-dbf-file" class="form-control" accept=".dbf,application/octet-stream,*">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-success" onclick="confirmUploadLecture()">💾 حفظ ورفع المحاضرة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- لوحة تحكم الإدارة -->
     <div id="section-admin-dashboard" class="app-section hidden container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="section-title text-success m-0">بوابة الإدارة المركزية</h2>
@@ -254,7 +285,7 @@
             </div>
             <div class="table-responsive">
                 <table class="table table-sm table-bordered bg-white">
-                    <thead class="table-light"><tr><th>بند الإيراد / النشاط</th><th>عدد العمليات</th>, <th>إجمالي المبلغ المحصل</th></tr></thead>
+                    <thead class="table-light"><tr><th>بند الإيراد / النشاط</th><th>عدد العمليات</th><th>إجمالي المبلغ المحصل</th></tr></thead>
                     <tbody id="income-statement-table"></tbody>
                 </table>
             </div>
@@ -275,7 +306,7 @@
             </div>
         </div>
 
-        <!-- إدارة المتدربين (مع زر الحذف) -->
+        <!-- إدارة المتدربين -->
         <div class="panel-box mb-4 border-info">
             <h4 class="fw-bold mb-3 text-primary">👨‍🎓 إدارة المتدربين (الطلبات، الأرقام السرية، والحذف)</h4>
             <h5 class="text-secondary mb-2">⏳ طلبات تسجيل المتدربين المعلقة</h5>
@@ -284,7 +315,7 @@
             <div class="table-responsive"><table class="table table-hover align-middle"><thead class="table-light"><tr><th>الاسم</th><th>البريد</th><th>اسم المستخدم</th><th>كلمة المرور</th><th>الحالة</th><th>الإجراء</th></tr></thead><tbody id="admin-students-list-table"></tbody></table></div>
         </div>
 
-        <!-- إدارة المدربين (مع زر الحذف) -->
+        <!-- إدارة المدربين -->
         <div class="panel-box mb-4 border-success">
             <h4 class="fw-bold mb-3 text-success">👨‍🏫 إدارة المدربين (الطلبات، الأرقام السرية، والحذف)</h4>
             <h5 class="text-secondary mb-2">⏳ طلبات تسجيل المدربين المعلقة</h5>
@@ -340,7 +371,7 @@
                 ...masterCoursesPool[0], 
                 instructor: "أ. عبدالله امحمد بلعيد لسود", 
                 status: "متاح", 
-                lectures: [{ id: 101, title: "المحاضرة الأولى", videoUrl: "", dbfName: "accounts.dbf", dbfData: "# ملف تمثيلي للنظام" }], 
+                lectures: [{ id: 101, title: "المحاضرة الأولى", videoUrl: "", dbfName: "accounts.dbf", dbfData: "" }], 
                 exams: { midterm: null, final: null } 
             }
         ];
@@ -412,7 +443,7 @@
             let p = document.getElementById('st-pass').value.trim();
             let found = usersList.find(x => x.user === u && x.pass === p && x.type === "متدرب");
             if(found) {
-                if(!found.approved) { alert('حسابك قيد المراجعة ولم يتم اعتماده بعد.'); return; }
+                if(!found.approved) { alert('حسابك قيد المراجعة ولم يتم اعتماده بعد من الإدارة.'); return; }
                 loggedInUser = found;
                 if(!loggedInUser.examAttempts) loggedInUser.examAttempts = {};
                 document.getElementById('student-welcome-title').innerText = `لوحة المتدرب: ${found.name}`;
@@ -425,7 +456,7 @@
             let p = document.getElementById('inst-pass').value.trim();
             let found = usersList.find(x => x.user === u && x.pass === p && x.type === "مدرب");
             if(found) {
-                if(!found.approved) { alert('حساب المدرب لم يتم اعتماده بعد.'); return; }
+                if(!found.approved) { alert('حساب المدرب قيد المراجعة ولم يتم اعتماده بعد من الإدارة.'); return; }
                 loggedInUser = found;
                 document.getElementById('instructor-welcome-title').innerText = `لوحة المدرب: ${found.name}`;
                 showSection('instructor-dashboard');
@@ -517,14 +548,15 @@
             if(!tbody) return;
             tbody.innerHTML = myCourses.length ? myCourses.map(c => {
                 let actualIndex = activeCourses.indexOf(c);
+                let lecturesListText = c.lectures.length ? c.lectures.map(l => `<span class="badge bg-secondary me-1 mb-1">📹 ${l.title}</span>`).join('') : '<span class="text-muted small">لا توجد محاضرات مرفوعة</span>';
                 return `
                     <tr>
                         <td><code>${c.code}</code></td>
                         <td class="fw-bold">${c.title}</td>
                         <td><span class="badge ${c.type==='subject'?'bg-primary':'bg-success'}">${c.type==='subject'?'مقرر':'دورة'}</span></td>
-                        <td>محاضرات مرفوعة: ${c.lectures.length}</td>
+                        <td>${lecturesListText}</td>
                         <td>
-                            <button class="btn btn-sm text-white mb-1" style="background-color: var(--soft-green);" onclick="openUploadModal(${actualIndex})">📹 رفع ملف فيديو + 📥 ملف DBF</button>
+                            <button class="btn btn-sm text-white mb-1" style="background-color: var(--soft-green);" onclick="openUploadModal(${actualIndex})">➕ إضافة محاضرة (فيديو + DBF)</button>
                         </td>
                     </tr>`;
             }).join('') : '<tr><td colspan="5" class="text-center text-muted">ليس لديك مقررات مضافة لجدولك. اختر من القائمة بالأعلى وأضفها.</td></tr>';
@@ -541,39 +573,36 @@
             }
         }
 
-        // رفع ملف الفيديو الحقيقي مباشرة من الهاتف أو الجهاز (بدل الروابط)
         function openUploadModal(index) {
-            let title = prompt("أدخل عنوان المحاضرة أو الدرس:");
-            if(!title) return;
+            document.getElementById('upload-course-index').value = index;
+            document.getElementById('modal-lecture-title').value = '';
+            document.getElementById('modal-video-file').value = '';
+            document.getElementById('modal-dbf-file').value = '';
+            let myModal = new bootstrap.Modal(document.getElementById('uploadLectureModal'));
+            myModal.show();
+        }
 
-            let videoInput = document.createElement('input');
-            videoInput.type = 'file';
-            videoInput.accept = 'video/*';
+        function confirmUploadLecture() {
+            let index = parseInt(document.getElementById('upload-course-index').value);
+            let title = document.getElementById('modal-lecture-title').value.trim();
+            let videoFileInput = document.getElementById('modal-video-file');
+            let dbfFileInput = document.getElementById('modal-dbf-file');
 
-            let dbfInput = document.createElement('input');
-            dbfInput.type = 'file';
-            dbfInput.accept = '.dbf,application/octet-stream,*';
+            if(!title) { alert('الرجاء إدخال عنوان المحاضرة.'); return; }
 
-            videoInput.onchange = function(e1) {
-                let videoFile = e1.target.files[0];
-                let videoUrl = videoFile ? URL.createObjectURL(videoFile) : "";
+            let videoUrl = videoFileInput.files[0] ? URL.createObjectURL(videoFileInput.files[0]) : "";
+            let dbfFile = dbfFileInput.files[0];
+            let dbfName = dbfFile ? dbfFile.name : "";
+            let dbfData = dbfFile ? URL.createObjectURL(dbfFile) : "";
 
-                dbfInput.onchange = function(e2) {
-                    let dbfFile = e2.target.files[0];
-                    let dbfName = dbfFile ? dbfFile.name : "accounts.dbf";
-                    let dbfData = dbfFile ? URL.createObjectURL(dbfFile) : "";
+            activeCourses[index].lectures.push({ id: Date.now(), title, videoUrl, dbfName, dbfData });
+            
+            let modalEl = document.getElementById('uploadLectureModal');
+            let modalObj = bootstrap.Modal.getInstance(modalEl);
+            modalObj.hide();
 
-                    activeCourses[index].lectures.push({ id: Date.Now ? Date.now() : new Date().getTime(), title, videoUrl, dbfName, dbfData });
-                    alert('تم رفع ملف الفيديو الفعلي وملف الـ DBF بنجاح من هاتفك وسيظهر للطالب مباشرة!');
-                    renderInstructorDashTables();
-                };
-                
-                alert('الخطوة 2: اختر ملف النظام (DBF):');
-                dbfInput.click();
-            };
-
-            alert('الخطوة 1: اختر ملف الفيديو المرئي (MP4 أو فيديو من هاتفك):');
-            videoInput.click();
+            alert('تمت إضافة المحاضرة والملفات بنجاح وتحديث صفحة الطالب مباشرة!');
+            renderInstructorDashTables();
         }
 
         function renderStudentDashboard() {
@@ -620,6 +649,24 @@
             rechargeCards.push({ code, amount: amt, used: false });
             alert(`تم توليد كرت الشحن بنجاح:\nالرمز: ${code}\nالقيمة: ${amt} د.ل`);
             renderAdminDashboard();
+        }
+
+        function approveStudent(username) {
+            let user = usersList.find(u => u.user === username);
+            if(user) { user.approved = true; alert('تم اعتماد المتدرب بنجاح!'); renderAdminDashboard(); }
+        }
+
+        function approveInstructor(username) {
+            let user = usersList.find(u => u.user === username);
+            if(user) { user.approved = true; alert('تم اعتماد المدرب بنجاح!'); renderAdminDashboard(); }
+        }
+
+        function deleteUser(username) {
+            if(confirm('هل أنت متأكد من حذف هذا المستخدم نهائياً؟')) {
+                usersList = usersList.filter(u => u.user !== username);
+                alert('تم الحذف بنجاح.');
+                renderAdminDashboard();
+            }
         }
 
         function renderAdminDashboard() {
@@ -717,27 +764,6 @@
                     <td><button class="btn btn-sm btn-danger" onclick="deleteUser('${i.user}')">حذف المدرب</button></td>
                 </tr>`).join('') || '<tr><td colspan="6" class="text-center text-muted">لا يوجد مدربون معتمدون.</td></tr>';
         }
-
-        function approveStudent(uName) {
-            let u = usersList.find(x => x.user === uName && x.type === 'متدرب');
-            if(u) { u.approved = true; alert('تم اعتماد المتدرب بنجاح!'); renderAdminDashboard(); }
-        }
-
-        function approveInstructor(uName) {
-            let u = usersList.find(x => x.user === uName && x.type === 'مدرب');
-            if(u) { u.approved = true; alert('تم اعتماد المدرب بنجاح!'); renderAdminDashboard(); }
-        }
-
-        // دالة حذف طالب أو مدرب نهائياً من القائمة
-        function deleteUser(uName) {
-            if(confirm('هل أنت متأكد من رغبتك في حذف هذا المستخدم نهائياً؟')) {
-                usersList = usersList.filter(x => x.user !== uName);
-                alert('تم حذف المستخدم بنجاح.');
-                renderAdminDashboard();
-            }
-        }
-
-        window.onload = function() { showSection('home'); };
     </script>
 </body>
 </html>
