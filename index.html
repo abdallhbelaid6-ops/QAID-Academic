@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة قَيْد | QAID - المحاسبة والعلوم المالية</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <!-- مكتبات Firebase السحابية -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <style>
         :root {
             --royal-blue: #1e3d59;     
@@ -339,6 +342,21 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // إعدادات سحابة Firebase الخاصة بك
+        const firebaseConfig = {
+            apiKey: "AIzaSyA3rHd612-SfUpo-407VKno9nIxQobRCE",
+            authDomain: "qaid-10f3f.firebaseapp.com",
+            projectId: "qaid-10f3f",
+            storageBucket: "qaid-10f3f.appspot.com",
+            messagingSenderId: "969831945382",
+            appId: "1:969831945382:web:94aa20e61c97402cf4d067"
+        };
+
+        // تهيئة الاتصال بقاعدة البيانات السحابية
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        console.log("تم الاتصال بسحابة Firebase بنجاح!");
+
         let masterCoursesPool = [
             { id: 991, type: 'private', code: "PRV-INT", title: "دورة إعداد محاسب", price: 200, instructorShare: 100, desc: "تأهيل شامل لاحتراف العمل المحاسبي.", lectures: [], exams: { midterm: null, final: null } },
             { id: 992, type: 'private', code: "PRV-SYS", title: "دورة منظومات المحلات التجارية", price: 400, instructorShare: 100, desc: "تدريب عملي على منظومات المبيعات والمخازن.", lectures: [], exams: { midterm: null, final: null } },
